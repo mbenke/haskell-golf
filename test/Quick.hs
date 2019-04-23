@@ -4,6 +4,9 @@ import Test.QuickCheck
 import Golf.List(prod,prodWith)
 import qualified Golf.Leafy as Leafy
 import Golf.Leafy(Leafy(..))
+import qualified Golf.Tree as Tree
+import Golf.Tree(Tree)
+
 instance Show (a->b) where
   show f = "<function>"
 
@@ -37,6 +40,10 @@ prop_leafy_join3 t = Leafy.join(fmap Leafy.join t) == Leafy.join(Leafy.join t)
 
 prop_leafy_list :: [Int] -> Property
 prop_leafy_list xs = (not (null xs)) ==> Leafy.toList (Leafy.fromList xs) === xs
+
+
+prop_tree_list :: [Int] -> Property
+prop_tree_list xs = Tree.toList (Tree.fromList xs) === xs
 
 return []
 

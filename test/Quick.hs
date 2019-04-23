@@ -35,8 +35,9 @@ prop_leafy_join2 t = Leafy.join (fmap Leafy.leaf t) == t
   where types = (t::Leafy(Leafy(Int)))
 
 -- join . fmap join = join . join
-prop_leafy_join3 t = Leafy.join(fmap Leafy.join t) == Leafy.join(Leafy.join t)
-  where types = (t::Leafy(Leafy(Leafy(Int))))
+-- commented out as slow
+-- prop_leafy_join3 t = Leafy.join(fmap Leafy.join t) == Leafy.join(Leafy.join t)
+--   where types = (t::Leafy(Leafy(Leafy(Int))))
 
 prop_leafy_list :: [Int] -> Property
 prop_leafy_list xs = (not (null xs)) ==> Leafy.toList (Leafy.fromList xs) === xs
@@ -44,6 +45,15 @@ prop_leafy_list xs = (not (null xs)) ==> Leafy.toList (Leafy.fromList xs) === xs
 
 prop_tree_list :: [Int] -> Property
 prop_tree_list xs = Tree.toList (Tree.fromList xs) === xs
+
+prop_tree_merge1 t = mempty <> t === t
+  where types = [t::Tree Int]
+
+prop_tree_merge2 t = t <> mempty === t
+  where types = [t::Tree Int]
+
+prop_tree_merge3 t u v = (t <> u) <> v === (t <> u) <> v
+  where types = [t,u,v::Tree Int]
 
 return []
 

@@ -19,7 +19,7 @@ prod = prodWith (,)
 prodWith :: (a->b->c) -> [a] -> [b] -> [c]
 
 -- prodWith f xs ys = [f x y | x <- xs, y <- ys]
-prodWith f xs ys = concat (map g xs) where g = for ys . f
+prodWith f xs ys = concat (map (for ys . f) xs)
 
 
 for :: [a] -> (a->b) -> [b]

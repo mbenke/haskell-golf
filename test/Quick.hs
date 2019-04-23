@@ -35,6 +35,9 @@ prop_leafy_join2 t = Leafy.join (fmap Leafy.leaf t) == t
 prop_leafy_join3 t = Leafy.join(fmap Leafy.join t) == Leafy.join(Leafy.join t)
   where types = (t::Leafy(Leafy(Leafy(Int))))
 
+prop_leafy_list :: [Int] -> Property
+prop_leafy_list xs = (not (null xs)) ==> Leafy.toList (Leafy.fromList xs) === xs
+
 return []
 
 runTests = $(quickCheckAll)
@@ -42,6 +45,7 @@ runTests = $(quickCheckAll)
 main = do
   putStrLn ""
   runTests
+  -- verboseCheck prop_leafy_list
 {-
 main = do
   writeln "\nprop_prod_dist"

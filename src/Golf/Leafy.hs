@@ -8,10 +8,15 @@ type L = Leafy
 leaf = Leaf
 
 fromList :: [a] -> Leafy a
+fromList [] = error "fromList: empty list"
 fromList [x] = leaf x
 fromList xs = Branch (fromList l) (fromList r) where
   (l, r) = splitAt half xs
   half = length xs `div` 2
+
+toList :: Leafy a -> [a]
+toList (Leaf x) = [x]
+toList (Branch l r) = toList l ++ toList r
 
 instance Functor Leafy where
   fmap f (Leaf a) = Leaf (f a)

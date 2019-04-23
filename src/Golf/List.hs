@@ -19,5 +19,8 @@ prod = prodWith (,)
 prodWith :: (a->b->c) -> [a] -> [b] -> [c]
 
 -- prodWith f xs ys = [f x y | x <- xs, y <- ys]
--- prodWith f (x:xs) ys = map (f x) ys ++ prodWith f xs ys
-prodWith f xs ys = concat [map (f x) ys | x <- xs]
+prodWith f xs ys = concat (map g xs) where g x = for ys (f x)
+
+
+for :: [a] -> (a->b) -> [b]
+for = flip map

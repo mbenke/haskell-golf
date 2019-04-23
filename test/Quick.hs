@@ -55,6 +55,18 @@ prop_tree_merge2 t = t <> mempty === t
 prop_tree_merge3 t u v = (t <> u) <> v === (t <> u) <> v
   where types = [t,u,v::Tree Int]
 
+-- join . leaf = id
+prop_tree_join1 t = Tree.join (Tree.leaf t) === t
+  where types = (t::Tree(Tree(Int)))
+
+-- join . fmap leaf = id
+prop_tree_join2 t = Tree.join (fmap Tree.leaf t) === t
+  where types = (t::Tree(Tree(Int)))
+
+-- join . fmap join = join . join
+prop_tree_join3 t = Tree.join(fmap Tree.join t) === Tree.join(Tree.join t)
+   where types = (t::Tree(Tree(Tree(Int))))
+
 return []
 
 runTests = $(quickCheckAll)

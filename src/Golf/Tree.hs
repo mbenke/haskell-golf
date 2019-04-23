@@ -25,6 +25,8 @@ toList = toListPrefix
 
 instance Arbitrary a => Arbitrary (Tree a) where
   arbitrary = sized arbTree
+  shrink Empty = []
+  shrink (Node x l r) = [Empty,l,r] ++ [Node x' l' r' | (x',l',r') <- shrink (x,l,r)]
 
 arbTree 0 = pure Empty
 arbTree n = frequency
@@ -52,4 +54,7 @@ instance Monoid (Tree a) where
 -- join . fmap join = join
 join :: Tree (Tree a) -> Tree a
 join Empty = Empty
--- join (Node t l r) =
+join (Node t l r) = join l <> t <> join r
+
+-- instance Applicative Tree where
+--   pure = leaf

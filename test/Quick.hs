@@ -64,6 +64,9 @@ prop_tree_join1 t = Tree.join (Tree.leaf t) === t
 
 -- join . fmap leaf = id
 prop_tree_join2 t = Tree.join (fmap Tree.leaf t) === t
+  where types = (t::Tree(Int))
+
+prop_tree_join2b t = Tree.join (fmap Tree.leaf t) === t
   where types = (t::Tree(Tree(Int)))
 
 -- join . fmap join = join . join

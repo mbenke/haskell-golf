@@ -5,7 +5,7 @@ import Test.QuickCheck
 
 data Tree a = Empty
             | Node a (Tree a) (Tree a)
-            deriving (Eq, Show, Functor)
+            deriving (Show, Functor)
 
 leaf :: a -> Tree a
 leaf a = Node a Empty Empty
@@ -22,6 +22,9 @@ toListPrefix (Node x l r) = x : toListPrefix l ++ toListPrefix r
 
 toList = toListPrefix
 
+-- Compare trees by their content
+instance Eq a => Eq (Tree a) where
+  t1 == t2 = toList t1 == toList t2
 
 instance Arbitrary a => Arbitrary (Tree a) where
   arbitrary = sized arbTree
@@ -67,8 +70,20 @@ instance Monoid (Tree a) where
 -- join . fmap pure = join . pure = id
 -- join . fmap join = join
 join :: Tree (Tree a) -> Tree a
+-- This works if we compare trees by content
+-- when comparing by structure, `join . fmap leaf = id` fails
 join Empty = Empty
-join (Node t l r) = join l <> t <> join r
+join (Node t l r) = t <> join l <> join r
+
+-- Some more failed attempts:
+-- This fails at both `join . fmap leaf = id` and `join .fmap join = join . join`
+-- join (Node x Empty Empty) = x
+-- join (Node t l r) = fromList (concatMap toList [join l, t, join r])
+
+-- This is no better
+-- join = fromList . toList .join' where
+--   join' Empty = Empty
+--   join' (Node t l r) = t <> join l <> join r
 
 -- instance Applicative Tree where
 --   pure = leaf

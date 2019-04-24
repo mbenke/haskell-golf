@@ -26,17 +26,6 @@ toList = toListPrefix
 instance Eq a => Eq (Tree a) where
   t1 == t2 = toList t1 == toList t2
 
-instance Arbitrary a => Arbitrary (Tree a) where
-  arbitrary = sized arbTree
-  shrink Empty = []
-  shrink (Node x l r) = [Empty,l,r] ++ [Node x' l' r' | (x',l',r') <- shrink (x,l,r)]
-
-arbTree 0 = pure Empty
-arbTree n = frequency
-  [ (1, pure Empty)
-  , (4, Node <$> arbitrary <*> arbTree m <*> arbTree m)
-  ] where m = div n 2
-
 ffor :: Functor f => f a -> (a->b) -> f b
 ffor = flip fmap
 

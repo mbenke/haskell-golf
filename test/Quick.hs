@@ -70,6 +70,13 @@ prop_tree_join2 t = Tree.join (fmap Tree.leaf t) === t
 prop_tree_join3 t = Tree.join(fmap Tree.join t) === Tree.join(Tree.join t)
    where types = (t::Tree(Tree(Tree(Int))))
 
+prop_getLast xs = let t = Tree.fromList xs in case reverse xs::[Int] of
+  [] -> Tree.getLast t === Nothing
+  (y:ys) -> case Tree.getLast t of
+    Nothing -> Nothing === Just y
+    Just (_, x) -> y === x
+
+-- ------------ --
 return []
 
 runTests = $(quickCheckAll)

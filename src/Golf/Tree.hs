@@ -37,6 +37,12 @@ arbTree n = frequency
 ffor :: Functor f => f a -> (a->b) -> f b
 ffor = flip fmap
 
+getLast :: Tree a -> Maybe (Tree a, a)
+getLast Empty = Nothing
+getLast (Node x l Empty) = Just (l, x)
+getLast (Node x l r) = do
+  (r', y) <- getLast r
+  return (Node x l r', y)
 
 merge :: Tree a -> Tree a -> Tree a
 merge Empty t = t

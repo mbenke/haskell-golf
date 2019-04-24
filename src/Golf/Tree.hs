@@ -48,6 +48,14 @@ merge :: Tree a -> Tree a -> Tree a
 merge Empty t = t
 merge (Node x l r) t = Node x l (merge r t)
 
+-- merge by promoting last leaf seems in fact worse
+{-
+merge l Empty = l
+merge l r = case getLast l of
+  Nothing -> r
+  Just (l', x) -> Node x l' r
+-}
+
 instance Semigroup (Tree a) where
   (<>) = merge
 

@@ -55,6 +55,9 @@ prop_tree_merge2 t = t <> mempty === t
 prop_tree_merge3 t u v = (t <> u) <> v === (t <> u) <> v
   where types = [t,u,v::Tree Int]
 
+prop_tree_merge3b t u v = (t <> u) <> v === (t <> u) <> v
+  where types = [t,u,v::Tree (Tree Bool)]
+
 -- join . leaf = id
 prop_tree_join1 t = Tree.join (Tree.leaf t) === t
   where types = (t::Tree(Tree(Int)))
@@ -74,7 +77,7 @@ runTests = $(quickCheckAll)
 main = do
   putStrLn ""
   runTests
-  -- verboseCheck prop_leafy_list
+--   verboseCheck prop_tree_join2
 {-
 main = do
   writeln "\nprop_prod_dist"

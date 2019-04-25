@@ -18,8 +18,8 @@ arbRose n = frequency [(1, arbLeaf), (4, go)] where
     children <- sequence [arbRose  (div n m) | i <- [1..m]]
     return (Rose root children)
 
-prop_rose_list :: [Int] -> Property
-prop_rose_list xs = (not (null xs)) ==> toList (fromList xs) === xs
+prop_rose_list :: NonEmptyList Int -> Property
+prop_rose_list (NonEmpty xs) =  toList (fromList xs) === xs
 
 return []
 

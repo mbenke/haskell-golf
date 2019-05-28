@@ -26,9 +26,11 @@ vhead (x:>_) = x
 vtail :: Vec a (S n) -> Vec a n
 vtail (_:>xs) = xs
 
+{-
 vappend :: Vec a m -> Vec a n -> Vec a (m:+n)
 vappend V0 ys = ys
 vappend (x:>xs) ys = x:>vappend xs ys
+-}
 
 atIndex :: Vec a n -> Fin n -> a
 atIndex (x:>_) FinZ = x
@@ -55,3 +57,19 @@ vtakeP (SS m) n (x:>xs) = x :> vtakeP m n xs
 vtake :: forall n m a. SNat m -> Vec a (m :+ n) -> Vec a m
 vtake SZ _ = V0
 vtake (SS m) (x:>xs) = x :> vtake @n m xs
+
+-- "bastard" foldr: induction on Nat, recursion on Vec
+foldrVec :: forall (p::Nat-> *) a (m::Nat).
+            (forall n. a -> p n -> p (S n)) -> p Z -> Vec a m -> p m
+foldrVec f z V0 = z
+foldrVec f z (a:>v) = f a (foldrVec f z v)
+
+
+-- a more general bastard foldr with Proxy
+foldrVecP :: forall (k::Nat)(p::Nat-> *) a (m::Nat).
+            Proxy k -> (forall n. a -> p n -> p (S n)) -> p k -> Vec a m -> p (m:+k)
+foldrVecP k f z V0 = z
+foldrVecP k f z (a:>v) = f a (foldrVecP k f z v)
+
+append :: Vec a m -> Vec a n -> Vec a (m:+n)
+append xs ys = foldrVecP Proxy (:>) ys xs

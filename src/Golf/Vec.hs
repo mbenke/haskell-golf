@@ -4,14 +4,21 @@
 {-# LANGUAGE Rank2Types          #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE StandaloneDeriving #-}
 
 module Golf.Vec where
 import Golf.Nat
+import Data.Proxy
 
 infixr 6 :>
 data Vec a (n :: Nat) where
   V0  :: Vec a Z
   (:>) :: a -> Vec a n -> Vec a (S n)
+
+deriving instance Show a => Show (Vec a n)
+
 
 vhead :: Vec a (S n) -> a
 vhead (x:>_) = x
@@ -35,3 +42,16 @@ vchop :: SNat m -> Vec a (m:+n) -> (Vec a m, Vec a n)
 vchop SZ xs = (V0, xs)
 vchop (SS m) (x:>xs) = (x:>ys, zs) where
   (ys,zs) = vchop m xs
+
+-- >>> let v = 1 :> (1 :> (1 :> V0)); two = SS(SS SZ) in vtake3 two Proxy v
+vtakeP :: SNat m -> Proxy n -> Vec a (m :+ n) -> Vec a m
+vtakeP SZ     _ _ = V0
+vtakeP (SS m) n (x:>xs) = x :> vtakeP m n xs
+
+
+-- Without Proxy, but needs AmbiguousTypes
+-- >>> let v = 1 :> (1 :> (1 :> V0));  two = SS(SS SZ) in vtake two v
+-- 1 :> (1 :> V0)
+vtake :: forall n m a. SNat m -> Vec a (m :+ n) -> Vec a m
+vtake SZ _ = V0
+vtake (SS m) (x:>xs) = x :> vtake @n m xs

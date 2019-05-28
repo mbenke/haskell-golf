@@ -30,3 +30,8 @@ atIndex (_:>xs) (FinS k) = atIndex xs k
 vreplicate :: SNat n -> a -> Vec a n
 vreplicate SZ _ = V0
 vreplicate (SS n) x = x:>(vreplicate n x)
+
+vchop :: SNat m -> Vec a (m:+n) -> (Vec a m, Vec a n)
+vchop SZ xs = (V0, xs)
+vchop (SS m) (x:>xs) = (x:>ys, zs) where
+  (ys,zs) = vchop m xs

@@ -73,3 +73,17 @@ foldrVecP k f z (a:>v) = f a (foldrVecP k f z v)
 
 append :: Vec a m -> Vec a n -> Vec a (m:+n)
 append xs ys = foldrVecP Proxy (:>) ys xs
+
+foldlVec :: forall (p::Nat-> *) a (m::Nat).
+            (forall n. p n -> a -> p (S n)) -> p Z -> Vec a m -> p m
+foldlVec f z V0 = z
+foldlVec f z (x:>xs) = lower result where
+  result :: m ~ S k => Bump p k
+  result = foldlVec pSS pSZ xs
+  pSZ :: Bump p Z
+  pSZ = Bump $ f z x
+  pSS :: forall n. Bump p n -> a -> Bump p (S n)
+  pSS h = Bump . f (lower h)
+
+vreverse :: Vec a m -> Vec a m
+vreverse = foldlVec (flip (:>)) V0

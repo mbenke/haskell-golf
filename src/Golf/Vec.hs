@@ -26,3 +26,7 @@ vappend (x:>xs) ys = x:>vappend xs ys
 atIndex :: Vec a n -> Fin n -> a
 atIndex (x:>_) FinZ = x
 atIndex (_:>xs) (FinS k) = atIndex xs k
+
+vreplicate :: SNat n -> a -> Vec a n
+vreplicate SZ _ = V0
+vreplicate (SS n) x = x:>(vreplicate n x)

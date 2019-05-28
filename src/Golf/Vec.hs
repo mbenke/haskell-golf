@@ -22,3 +22,7 @@ vtail (_:>xs) = xs
 vappend :: Vec a m -> Vec a n -> Vec a (m:+n)
 vappend V0 ys = ys
 vappend (x:>xs) ys = x:>vappend xs ys
+
+atIndex :: Vec a n -> Fin n -> a
+atIndex (x:>_) FinZ = x
+atIndex (_:>xs) (FinS k) = atIndex xs k
